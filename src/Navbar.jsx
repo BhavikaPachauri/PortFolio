@@ -94,7 +94,7 @@ function Navbar() {
   );
 
   return (
-    <section >
+    <section  >
       <motion.nav
         style={{ 
           y: navY, 

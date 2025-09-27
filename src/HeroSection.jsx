@@ -1,271 +1,268 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
-// Enhanced 3D Floating Particles with depth layers
-const FloatingParticles = () => {
-  const particlesRef = useRef();
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+// Animated Code Background Component
+const AnimatedCodeBackground = React.memo(() => {
+  const codeSnippets = useMemo(() => [
+    'const developer = new Creative();',
+    'function buildAmazing() { return magic; }',
+    'class Innovation extends Creativity {}',
+    'const dreams = await reality.build();',
+    'import { passion } from "./soul";',
+    'export default Excellence;',
+    'while(learning) { grow(); }',
+    'const future = () => possibilities;',
+    '// Code that changes the world',
+    'return <PerfectSolution />;',
+    'useState(creativity);',
+    'useEffect(() => { inspire(); });',
+    'npm install awesome-ideas',
+    'git commit -m "✨ Magic"',
+    'const vision = transform(ideas);'
+  ], []);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+  const codeLines = useMemo(() => {
+    return Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      text: codeSnippets[i],
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      fontSize: Math.random() * 8 + 12,
+      opacity: Math.random() * 0.4 + 0.1,
+      duration: Math.random() * 20 + 15,
+      delay: Math.random() * 10,
+      color: ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f59e0b'][Math.floor(Math.random() * 5)]
+    }));
+  }, [codeSnippets]);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden font-mono">
+      {codeLines.map((line) => (
+        <motion.div
+          key={line.id}
+          className="absolute whitespace-nowrap select-none pointer-events-none"
+          style={{
+            left: `${line.x}%`,
+            top: `${line.y}%`,
+            fontSize: `${line.fontSize}px`,
+            color: line.color,
+            opacity: line.opacity,
+            textShadow: `0 0 10px ${line.color}50`,
+            willChange: 'transform, opacity'
+          }}
+          animate={{
+            x: [0, -200, 0],
+            y: [0, Math.random() * 100 - 50, 0],
+            opacity: [line.opacity, line.opacity * 2, line.opacity],
+            scale: [1, 1.1, 1],
+            rotateX: [0, Math.random() * 20, 0]
+          }}
+          transition={{
+            duration: line.duration,
+            repeat: Infinity,
+            delay: line.delay,
+            ease: "linear"
+          }}
+        >
+          {line.text}
+        </motion.div>
+      ))}
+      
+      {/* Floating brackets and symbols */}
+      {['{', '}', '<', '>', '(', ')', '[', ']', ';', '=', '+', '-'].map((symbol, i) => (
+        <motion.div
+          key={`symbol-${i}`}
+          className="absolute text-2xl font-bold select-none pointer-events-none"
+          style={{
+            left: `${Math.random() * 90 + 5}%`,
+            top: `${Math.random() * 90 + 5}%`,
+            color: ['#8b5cf6', '#ec4899', '#3b82f6'][Math.floor(Math.random() * 3)],
+            opacity: 0.2,
+            textShadow: '0 0 15px currentColor'
+          }}
+          animate={{
+            y: [0, -60, 0],
+            rotate: [0, 360, 0],
+            scale: [1, 1.5, 1],
+            opacity: [0.1, 0.6, 0.1]
+          }}
+          transition={{
+            duration: Math.random() * 8 + 6,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: "easeInOut"
+          }}
+        >
+          {symbol}
+        </motion.div>
+      ))}
+    </div>
+  );
+});
+
+// Enhanced Particle System
+const EnhancedParticles = React.memo(() => {
+  const particles = useMemo(() => {
+    return Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      size: Math.random() * 3 + 1,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      hue: Math.random() * 60 + 250, // Purple to pink range
+      duration: Math.random() * 6 + 4,
+      delay: Math.random() * 3
+    }));
   }, []);
 
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Layer 1: Background particles */}
-      {[...Array(80)].map((_, i) => (
+      {particles.map((particle) => (
         <motion.div
-          key={`bg-${i}`}
+          key={particle.id}
           className="absolute rounded-full"
           style={{
-            width: `${Math.random() * 3 + 1}px`,
-            height: `${Math.random() * 3 + 1}px`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            background: `radial-gradient(circle, ${
-              ['rgba(168, 85, 247, 0.4)', 'rgba(236, 72, 153, 0.4)', 'rgba(59, 130, 246, 0.4)', 'rgba(16, 185, 129, 0.4)'][Math.floor(Math.random() * 4)]
-            }, transparent)`
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
+            background: `hsl(${particle.hue}, 80%, 70%)`,
+            boxShadow: `0 0 ${particle.size * 6}px hsl(${particle.hue}, 80%, 70%, 0.8)`,
+            willChange: 'transform, opacity'
           }}
           animate={{
-            y: [0, Math.random() * -100 - 20, 0],
-            x: [0, Math.random() * 60 - 30, 0],
-            scale: [1, Math.random() * 2 + 1, 1],
-            opacity: [0.1, 1, 0.1],
-            rotate: [0, Math.random() * 360, 0]
+            y: [0, -80, 0],
+            x: [0, Math.random() * 40 - 20, 0],
+            scale: [1, 2.5, 1],
+            opacity: [0.3, 1, 0.3],
+            rotate: [0, 360, 0]
           }}
           transition={{
-            duration: Math.random() * 8 + 4,
+            duration: particle.duration,
             repeat: Infinity,
-            delay: Math.random() * 3,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-      
-      {/* Layer 2: Mid-ground particles */}
-      {[...Array(40)].map((_, i) => (
-        <motion.div
-          key={`mid-${i}`}
-          className="absolute rounded-full backdrop-blur-sm"
-          style={{
-            width: `${Math.random() * 6 + 3}px`,
-            height: `${Math.random() * 6 + 3}px`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            background: `linear-gradient(45deg, ${
-              ['#a855f7', '#ec4899', '#3b82f6', '#10b981'][Math.floor(Math.random() * 4)]
-            }, transparent)`,
-            boxShadow: `0 0 20px ${['#a855f7', '#ec4899', '#3b82f6', '#10b981'][Math.floor(Math.random() * 4)]}40`
-          }}
-          animate={{
-            y: [0, Math.random() * -150 - 30, 0],
-            x: [0, Math.random() * 80 - 40, 0],
-            scale: [0.5, 2, 0.5],
-            opacity: [0.2, 0.8, 0.2],
-            rotate: [0, Math.random() * 720, 0]
-          }}
-          transition={{
-            duration: Math.random() * 6 + 3,
-            repeat: Infinity,
-            delay: Math.random() * 2,
-            ease: "easeInOut",
+            delay: particle.delay,
+            ease: "easeInOut"
           }}
         />
       ))}
     </div>
   );
-};
+});
 
-// Advanced 3D Geometric Shapes with physics-like movement
-const FloatingShapes = () => {
+// Geometric Shapes with Code Symbols
+const CodeGeometry = React.memo(() => {
+  const shapes = useMemo(() => {
+    return Array.from({ length: 6 }, (_, i) => ({
+      id: i,
+      size: Math.random() * 25 + 15,
+      left: Math.random() * 85 + 7.5,
+      top: Math.random() * 85 + 7.5,
+      symbol: ['{ }', '< >', '[ ]', '( )', '/* */', '=> {}'][i],
+      color: ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'][i],
+      duration: Math.random() * 10 + 8,
+      delay: Math.random() * 4
+    }));
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Floating Morphing Cubes */}
-      {[...Array(12)].map((_, i) => (
+      {shapes.map((shape) => (
         <motion.div
-          key={`cube-${i}`}
-          className="absolute backdrop-blur-sm border opacity-60"
+          key={shape.id}
+          className="absolute backdrop-blur-sm border rounded-lg flex items-center justify-center font-mono font-bold select-none"
           style={{
-            width: `${Math.random() * 20 + 10}px`,
-            height: `${Math.random() * 20 + 10}px`,
-            left: `${Math.random() * 90 + 5}%`,
-            top: `${Math.random() * 90 + 5}%`,
-            background: `linear-gradient(135deg, ${
-              ['rgba(168, 85, 247, 0.3)', 'rgba(236, 72, 153, 0.3)', 'rgba(59, 130, 246, 0.3)'][Math.floor(Math.random() * 3)]
-            }, transparent)`,
-            borderColor: `${['#a855f7', '#ec4899', '#3b82f6'][Math.floor(Math.random() * 3)]}60`,
-            transform: `rotateX(${Math.random() * 60}deg) rotateY(${Math.random() * 60}deg)`,
-            borderRadius: `${Math.random() * 20}px`
+            width: `${shape.size + 20}px`,
+            height: `${shape.size}px`,
+            left: `${shape.left}%`,
+            top: `${shape.top}%`,
+            background: `${shape.color}15`,
+            borderColor: `${shape.color}40`,
+            color: shape.color,
+            fontSize: `${shape.size * 0.3}px`,
+            textShadow: `0 0 10px ${shape.color}80`,
+            willChange: 'transform, opacity'
           }}
           animate={{
-            y: [0, Math.random() * -80 - 20, 0],
-            rotateX: [0, Math.random() * 360, 0],
-            rotateY: [0, Math.random() * 360, 0],
-            rotateZ: [0, Math.random() * 180, 0],
-            scale: [0.8, 1.5, 0.8],
-            borderRadius: [`${Math.random() * 20}px`, `${Math.random() * 50}px`, `${Math.random() * 20}px`]
-          }}
-          transition={{
-            duration: Math.random() * 8 + 4,
-            repeat: Infinity,
-            delay: Math.random() * 3,
-            ease: "easeInOut"
-          }}
-        />
-      ))}
-      
-      {/* Floating Energy Rings */}
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={`ring-${i}`}
-          className="absolute rounded-full border-2"
-          style={{
-            width: `${Math.random() * 40 + 20}px`,
-            height: `${Math.random() * 40 + 20}px`,
-            left: `${Math.random() * 80 + 10}%`,
-            top: `${Math.random() * 80 + 10}%`,
-            borderColor: `${['#a855f7', '#ec4899', '#3b82f6', '#10b981'][Math.floor(Math.random() * 4)]}80`,
-            background: `conic-gradient(from ${Math.random() * 360}deg, transparent, ${
-              ['rgba(168, 85, 247, 0.4)', 'rgba(236, 72, 153, 0.4)', 'rgba(59, 130, 246, 0.4)', 'rgba(16, 185, 129, 0.4)'][Math.floor(Math.random() * 4)]
-            }, transparent)`,
-            boxShadow: `0 0 30px ${['#a855f7', '#ec4899', '#3b82f6', '#10b981'][Math.floor(Math.random() * 4)]}60`
-          }}
-          animate={{
-            rotate: [0, 360],
-            scale: [0.5, 1.8, 0.5],
-            opacity: [0.3, 1, 0.3],
-            y: [0, Math.random() * -60, 0]
-          }}
-          transition={{
-            duration: Math.random() * 10 + 5,
-            repeat: Infinity,
-            delay: Math.random() * 2,
-            ease: "easeInOut"
-          }}
-        />
-      ))}
-
-      {/* Floating Hexagons */}
-      {[...Array(6)].map((_, i) => (
-        <motion.div
-          key={`hex-${i}`}
-          className="absolute"
-          style={{
-            width: `${Math.random() * 30 + 15}px`,
-            height: `${Math.random() * 30 + 15}px`,
-            left: `${Math.random() * 85 + 7.5}%`,
-            top: `${Math.random() * 85 + 7.5}%`,
-            clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)',
-            background: `linear-gradient(60deg, ${
-              ['rgba(168, 85, 247, 0.4)', 'rgba(236, 72, 153, 0.4)', 'rgba(59, 130, 246, 0.4)'][Math.floor(Math.random() * 3)]
-            }, transparent)`
-          }}
-          animate={{
-            rotate: [0, 360],
-            scale: [0.7, 1.4, 0.7],
-            y: [0, Math.random() * -100, 0],
+            y: [0, -60, 0],
+            rotateX: [0, 180, 0],
+            rotateY: [0, 360, 0],
+            scale: [1, 1.3, 1],
             opacity: [0.4, 0.9, 0.4]
           }}
           transition={{
-            duration: Math.random() * 12 + 6,
+            duration: shape.duration,
             repeat: Infinity,
-            delay: Math.random() * 3,
+            delay: shape.delay,
             ease: "easeInOut"
           }}
-        />
+        >
+          {shape.symbol}
+        </motion.div>
       ))}
     </div>
   );
-};
+});
 
-// Ultra-Dynamic Animated Background
-const AnimatedBackground = () => {
+// Dynamic Background with Code Theme
+const DynamicCodeBackground = React.memo(() => {
   return (
     <div className="absolute inset-0">
-      {/* Primary gradient mesh */}
+      {/* Main gradient with code-inspired colors */}
       <motion.div
-        className="absolute inset-0 opacity-80"
+        className="absolute inset-0 opacity-70"
         style={{
           background: `
-            radial-gradient(ellipse at 10% 90%, rgba(168, 85, 247, 0.4) 0%, transparent 60%),
-            radial-gradient(ellipse at 90% 10%, rgba(236, 72, 153, 0.4) 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
-            radial-gradient(ellipse at 20% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 50%)
-          `
+            radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.4) 0%, transparent 60%),
+            radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.4) 0%, transparent 60%),
+            radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 70%),
+            radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.2) 0%, transparent 50%)
+          `,
+          willChange: 'transform, opacity'
         }}
         animate={{
           scale: [1, 1.2, 1],
           rotate: [0, 2, 0],
-          opacity: [0.6, 1, 0.6]
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      
-      {/* Secondary shifting gradients */}
-      <motion.div
-        className="absolute inset-0 opacity-50"
-        style={{
-          background: `
-            conic-gradient(from 0deg at 30% 30%, transparent, rgba(168, 85, 247, 0.3), transparent),
-            conic-gradient(from 120deg at 70% 70%, transparent, rgba(236, 72, 153, 0.3), transparent)
-          `
-        }}
-        animate={{
-          rotate: [0, 360],
-          scale: [0.8, 1.3, 0.8]
-        }}
-        transition={{
-          duration: 30,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
-      
-      {/* Dynamic wave patterns */}
-      <motion.div
-        className="absolute inset-0 opacity-40"
-        style={{
-          backgroundImage: `
-            linear-gradient(45deg, transparent 30%, rgba(168, 85, 247, 0.2) 50%, transparent 70%),
-            linear-gradient(-45deg, transparent 30%, rgba(236, 72, 153, 0.2) 50%, transparent 70%),
-            linear-gradient(90deg, transparent 40%, rgba(59, 130, 246, 0.15) 50%, transparent 60%)
-          `,
-          backgroundSize: '120px 120px, 80px 80px, 200px 200px',
-        }}
-        animate={{
-          x: [0, 100, -50, 0],
-          y: [0, -80, 40, 0],
-          backgroundPosition: ['0% 0%', '100% 100%', '0% 0%']
+          opacity: [0.5, 0.8, 0.5]
         }}
         transition={{
           duration: 20,
           repeat: Infinity,
-          ease: "linear",
+          ease: "easeInOut"
         }}
       />
-      
-      <FloatingParticles />
-      <FloatingShapes />
+
+      {/* Terminal-style grid */}
+      <motion.div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px'
+        }}
+        animate={{
+          backgroundPosition: ['0px 0px', '40px 40px', '0px 0px']
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+
+      <AnimatedCodeBackground />
+      <EnhancedParticles />
+      <CodeGeometry />
     </div>
   );
-};
+});
 
-// Enhanced 3D Text Component
-const Text3D = ({ children, className, size = 'normal', ...props }) => {
+// Enhanced 3D Text
+const Enhanced3DText = React.memo(({ children, className, size = 'normal', ...props }) => {
   const sizeClasses = {
     small: 'text-xl sm:text-2xl md:text-3xl',
     normal: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl',
-    large: 'text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem]'
+    large: 'text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl'
   };
 
   return (
@@ -273,59 +270,111 @@ const Text3D = ({ children, className, size = 'normal', ...props }) => {
       className={`relative font-black tracking-tight ${sizeClasses[size]} ${className}`}
       style={{
         textShadow: `
-          0 1px 0 rgba(168, 85, 247, 0.9),
-          0 2px 0 rgba(168, 85, 247, 0.8),
-          0 3px 0 rgba(168, 85, 247, 0.7),
-          0 4px 0 rgba(168, 85, 247, 0.6),
-          0 5px 0 rgba(168, 85, 247, 0.5),
-          0 6px 0 rgba(168, 85, 247, 0.4),
-          0 7px 1px rgba(0, 0, 0, 0.3),
-          0 0 50px rgba(168, 85, 247, 0.6)
+          0 1px 0 rgba(139, 92, 246, 0.9),
+          0 2px 0 rgba(139, 92, 246, 0.8),
+          0 3px 0 rgba(139, 92, 246, 0.7),
+          0 4px 0 rgba(139, 92, 246, 0.6),
+          0 5px 0 rgba(139, 92, 246, 0.5),
+          0 6px 0 rgba(139, 92, 246, 0.4),
+          0 8px 2px rgba(0, 0, 0, 0.3),
+          0 0 40px rgba(139, 92, 246, 0.7)
         `,
-        filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.5))'
+        filter: 'drop-shadow(0 0 30px rgba(139, 92, 246, 0.6))',
+        willChange: 'transform, filter'
       }}
       {...props}
     >
       {children}
     </motion.div>
   );
-};
+});
 
-const HeroSection = () => {
+// Interactive Button Component
+const InteractiveButton = React.memo(({ children, variant = 'primary', className = '', ...props }) => {
+  const variants = {
+    primary: 'from-purple-600 via-purple-500 to-purple-950',
+    secondary: 'border-2 border-purple-400 bg-transparent hover:bg-purple-500 hover:text-white'
+  };
+
+  return (
+    <motion.button
+      whileHover={{ 
+        scale: 1.08,
+        rotateY: 8,
+        boxShadow: variant === 'primary' ? 
+          "0 25px 50px rgba(139, 92, 246, 0.6)" : 
+          "0 20px 40px rgba(139, 92, 246, 0.4)"
+      }}
+      whileTap={{ 
+        scale: 0.95,
+        rotateY: -3
+      }}
+      className={`
+        relative px-8 sm:px-12 py-4 sm:py-6 
+        ${variant === 'primary' ? `bg-gradient-to-r ${variants.primary}` : variants.secondary}
+        rounded-2xl font-bold text-base sm:text-lg 
+        shadow-2xl overflow-hidden group min-w-[180px]
+        backdrop-blur-sm transition-all duration-500
+        ${className}
+      `}
+      style={{
+        transformStyle: 'preserve-3d',
+        boxShadow: variant === 'primary' ? 
+          '0 12px 35px rgba(139, 92, 246, 0.4)' : 
+          '0 10px 30px rgba(139, 92, 246, 0.3)',
+        willChange: 'transform, box-shadow'
+      }}
+      {...props}
+    >
+      {variant === 'primary' && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
+          initial={{ x: '-100%', rotate: -5 }}
+          whileHover={{ x: '100%', rotate: 5 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        />
+      )}
+      
+      <span className="relative z-10 flex items-center justify-center gap-2">
+        {children}
+      </span>
+    </motion.button>
+  );
+});
+
+const AnimatedCodeHero = () => {
   const [currentText, setCurrentText] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
   
-  const texts = [
-    "Full Stack Developer", 
-    "UI/UX Designer", 
-    "Problem Solver", 
-    "Tech Enthusiast",
-    "Creative Innovator",
-    "Digital Artist"
-  ];
+  const developerRoles = useMemo(() => [
+    "Full-Stack Developer", 
+    "FRONT-END DEVELOPER",
+    "Problem Solver",
+ 
+  ], []);
   
-  const mouseX = useSpring(0, { stiffness: 500, damping: 100 });
-  const mouseY = useSpring(0, { stiffness: 500, damping: 100 });
-  const backgroundX = useTransform(mouseX, [-1, 1], [-20, 20]);
-  const backgroundY = useTransform(mouseY, [-1, 1], [-20, 20]);
+  const mouseX = useSpring(0, { stiffness: 400, damping: 100 });
+  const mouseY = useSpring(0, { stiffness: 400, damping: 100 });
+  const backgroundX = useTransform(mouseX, [-1, 1], [-10, 10]);
+  const backgroundY = useTransform(mouseY, [-1, 1], [-10, 10]);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768);
   }, []);
 
   useEffect(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [checkMobile]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentText((prev) => (prev + 1) % texts.length);
+      setCurrentText((prev) => (prev + 1) % developerRoles.length);
     }, 2500);
     return () => clearInterval(interval);
-  }, [texts.length]);
+  }, [developerRoles.length]);
 
   useEffect(() => {
     if (isMobile) return;
@@ -341,43 +390,51 @@ const HeroSection = () => {
       mouseY.set(y);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY, isMobile]);
 
+  const InteractiveCursor = useMemo(() => {
+    if (isMobile) return null;
+    
+    return (
+      <motion.div
+        className="fixed w-96 h-96 pointer-events-none z-5 hidden md:block"
+        style={{
+          left: mousePosition.x - 192,
+          top: mousePosition.y - 192,
+          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.15) 30%, transparent 70%)',
+          willChange: 'transform, opacity'
+        }}
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.4, 0.8, 0.4],
+          rotate: [0, 180, 360]
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+    );
+  }, [isMobile, mousePosition.x, mousePosition.y]);
+
   return (
     <section id='home' className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-950 to-black text-white overflow-hidden">
-      <AnimatedBackground />
+      <DynamicCodeBackground />
       
-      {/* Interactive cursor glow - desktop only */}
-      {!isMobile && (
-        <motion.div
-          className="fixed w-96 h-96 pointer-events-none z-5 hidden md:block"
-          style={{
-            left: mousePosition.x - 192,
-            top: mousePosition.y - 192,
-            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.15) 30%, transparent 70%)',
-          }}
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.6, 0.3]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-          }}
-        />
-      )}
+      {InteractiveCursor}
       
       <motion.div 
-        className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full"
+        className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full"
         style={{
           x: isMobile ? 0 : backgroundX,
           y: isMobile ? 0 : backgroundY,
         }}
       >
         <motion.div
-          initial={{ opacity: 0, y: 100, rotateX: -45, scale: 0.8 }}
+          initial={{ opacity: 0, y: 80, rotateX: -30, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
           transition={{ 
             duration: 2,
@@ -387,16 +444,21 @@ const HeroSection = () => {
           className="mb-8 sm:mb-12"
           style={{ perspective: '1000px' }}
         >
-          {/* Main Name */}
-          <Text3D
+          {/* Enhanced Main Name */}
+          <Enhanced3DText
             size="large"
-            className="mb-4 sm:mb-6 md:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-green-400 leading-none"
+            className="mb-6 mt-30 sm:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 leading-none"
             style={{
               backgroundSize: '200% 200%',
             }}
             animate={{ 
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               scale: [1, 1.02, 1],
+              filter: [
+                'drop-shadow(0 0 30px rgba(139, 92, 246, 0.7)) hue-rotate(0deg)',
+                'drop-shadow(0 0 40px rgba(236, 72, 153, 0.8)) hue-rotate(30deg)',
+                'drop-shadow(0 0 30px rgba(139, 92, 246, 0.7)) hue-rotate(0deg)'
+              ]
             }}
             transition={{ 
               backgroundPosition: { 
@@ -408,6 +470,11 @@ const HeroSection = () => {
                 duration: 6, 
                 repeat: Infinity, 
                 ease: "easeInOut" 
+              },
+              filter: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
               }
             }}
             whileHover={{ 
@@ -417,10 +484,10 @@ const HeroSection = () => {
             }}
           >
             BHAVIKA
-          </Text3D>
+          </Enhanced3DText>
           
-          {/* Animated role text */}
-          <motion.div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-light mb-8 sm:mb-12 h-12 sm:h-16 md:h-20 flex items-center justify-center relative">
+          {/* Dynamic role text */}
+          <motion.div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light mb-8 sm:mb-12 h-12 sm:h-16 md:h-20 flex items-center justify-center relative">
             <AnimatePresence mode="wait">
               <motion.span
                 key={currentText}
@@ -451,9 +518,10 @@ const HeroSection = () => {
                 }}
                 className="absolute inset-0 bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent font-medium"
                 style={{
-                  textShadow: '0 0 30px rgba(168, 85, 247, 0.4)',
+                  textShadow: '0 0 30px rgba(139, 92, 246, 0.5)',
                   transformStyle: 'preserve-3d',
-                  backgroundSize: '200% 200%'
+                  backgroundSize: '200% 200%',
+                  willChange: 'transform, opacity, filter'
                 }}
               >
                 <motion.span
@@ -466,182 +534,98 @@ const HeroSection = () => {
                     ease: "linear"
                   }}
                   style={{
-                    background: 'linear-gradient(90deg, #d8b4fe, #f9a8d4, #93c5fd, #6ee7b7)',
+                    background: 'linear-gradient(90deg, #a78bfa, #f472b6, #60a5fa, #34d399)',
                     backgroundSize: '300% 100%',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent'
                   }}
                 >
-                  {texts[currentText]}
+                  {developerRoles[currentText]}
                 </motion.span>
               </motion.span>
             </AnimatePresence>
-            
-            {/* Text underline effect */}
-            <motion.div
-              className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400"
-              initial={{ width: 0 }}
-              animate={{ width: '100%' }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            />
           </motion.div>
 
-          {/* Subtitle */}
+          {/* Enhanced subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
-            className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4"
+            className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 sm:mb-14 max-w-3xl mx-auto leading-relaxed px-4"
           >
-            Crafting digital experiences that blend creativity with cutting-edge technology. 
+            Crafting exceptional digital experiences through clean code, innovative design, 
             <br className="hidden sm:block" />
-            Let's build something extraordinary together.
+            and relentless pursuit of perfection
           </motion.p>
         </motion.div>
 
-        {/* Enhanced CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.2 }}
-          className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 justify-center mb-16 sm:mb-20 px-4"
+          className="flex flex-col sm:flex-row flex-wrap gap-6 justify-center mb-16 sm:mb-20 px-4"
         >
-          <motion.button
-            whileHover={{ 
-              scale: 1.05,
-              rotateY: isMobile ? 0 : 10,
-              boxShadow: "0 25px 50px rgba(168, 85, 247, 0.6)",
-            }}
-            whileTap={{ scale: 0.98, rotateY: isMobile ? 0 : -5 }}
-            className="relative px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl font-bold text-base sm:text-lg shadow-2xl overflow-hidden group min-w-[200px]"
-            style={{
-              transformStyle: 'preserve-3d',
-              boxShadow: '0 15px 35px rgba(168, 85, 247, 0.4)'
-            }}
-          >
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              initial={{ x: '-100%', rotate: -10 }}
-              whileHover={{ x: '100%', rotate: 10 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            />
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              <span>View My Work</span>
-              <motion.span
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                ✦
-              </motion.span>
-            </span>
-            <motion.div
-              className="absolute inset-0 bg-white/20 rounded-2xl"
-              initial={{ scale: 0, borderRadius: '50%' }}
-              whileHover={{ scale: 1.5, borderRadius: '20px' }}
-              transition={{ duration: 0.5 }}
-            />
-          </motion.button>
+          <InteractiveButton variant="primary">
+            <span>View Portfolio</span>
+            <motion.span
+              animate={{ 
+                rotate: [0, 360],
+                scale: [1, 1.2, 1]
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              ✨
+            </motion.span>
+          </InteractiveButton>
           
-          <motion.button
-            whileHover={{ 
-              scale: 1.05,
-              rotateY: isMobile ? 0 : -10,
-              backgroundColor: 'rgba(168, 85, 247, 0.9)',
-              color: '#000',
-              borderColor: 'transparent'
-            }}
-            whileTap={{ scale: 0.98, rotateY: isMobile ? 0 : 5 }}
-            className="relative px-8 sm:px-10 py-4 sm:py-5 border-2 border-purple-400 rounded-2xl font-bold text-base sm:text-lg hover:text-black transition-all duration-500 backdrop-blur-sm bg-white/5 min-w-[200px]"
-            style={{
-              transformStyle: 'preserve-3d',
-              boxShadow: '0 15px 35px rgba(168, 85, 247, 0.2)'
-            }}
-          >
-            <motion.div
-              className="absolute inset-0 bg-purple-400 opacity-0 hover:opacity-100 transition-opacity duration-500 rounded-2xl"
-              whileHover={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 0.4 }}
-            />
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              <span>Contact Me</span>
-              <motion.span
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              >
-                ⚡
-              </motion.span>
-            </span>
-          </motion.button>
+          <InteractiveButton variant="secondary">
+            <span>Get in Touch</span>
+            <motion.span
+              animate={{ 
+                y: [0, -3, 0]
+              }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              🚀
+            </motion.span>
+          </InteractiveButton>
         </motion.div>
-
-        
-
-        {/* Enhanced floating elements */}
-        <motion.div
-          className="absolute -top-10 sm:-top-20 -left-10 sm:-left-20 w-20 sm:w-40 h-20 sm:h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-xl"
-          animate={{
-            scale: [1, 1.8, 1],
-            rotate: [0, 180, 360],
-            opacity: [0.2, 0.8, 0.2],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        <motion.div
-          className="absolute -bottom-10 sm:-bottom-20 -right-10 sm:-right-20 w-16 sm:w-32 h-16 sm:h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-xl"
-          animate={{
-            scale: [1.5, 1, 1.5],
-            rotate: [360, 180, 0],
-            opacity: [0.8, 0.2, 0.8],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
 
         {/* Enhanced scroll indicator */}
         <motion.div
-          className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 cursor-pointer group"
+          className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2 cursor-pointer group"
           animate={{ 
             y: [0, 15, 0],
             rotateX: [0, 10, 0]
           }}
           transition={{ duration: 3, repeat: Infinity }}
-          whileHover={{ scale: 1.2, rotateY: isMobile ? 0 : 10 }}
-          style={{ transformStyle: 'preserve-3d' }}
+          whileHover={{ 
+            scale: 1.2, 
+            rotateY: isMobile ? 0 : 10,
+            filter: 'drop-shadow(0 0 20px rgba(139, 92, 246, 0.8))'
+          }}
+          style={{ 
+            transformStyle: 'preserve-3d',
+            willChange: 'transform, filter'
+          }}
         >
-          <div className="w-6 sm:w-8 h-10 sm:h-14 border-2 border-purple-400 rounded-full flex justify-center relative backdrop-blur-sm bg-white/5 group-hover:border-pink-400 transition-colors duration-300">
+          <div className="w-8 h-14 border-2 border-purple-400 rounded-full flex justify-center relative backdrop-blur-sm bg-white/5 group-hover:border-pink-400 transition-colors duration-300">
             <motion.div
-              className="w-1.5 sm:w-2 h-3 sm:h-4 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full mt-2 sm:mt-3 shadow-lg"
+              className="w-2 h-4 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full mt-3 shadow-lg"
               animate={{ 
                 opacity: [0, 1, 0],
-                y: [0, 6, 0],
+                y: [0, 8, 0],
                 scale: [1, 1.3, 1]
               }}
               transition={{ duration: 3, repeat: Infinity }}
-            />
-            <motion.div
-              className="absolute inset-0 border-2 border-purple-300/50 rounded-full group-hover:border-pink-300/50 transition-colors duration-300"
-              animate={{
-                scale: [1, 1.4, 1],
-                opacity: [0.5, 0, 0.5]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.div
-              className="absolute -inset-2 border border-purple-400/30 rounded-full"
-              animate={{
-                scale: [1, 1.6, 1],
-                opacity: [0.3, 0, 0.3],
-                rotate: [0, 180, 360]
-              }}
-              transition={{ duration: 4, repeat: Infinity }}
             />
           </div>
           <motion.p
@@ -649,69 +633,15 @@ const HeroSection = () => {
             animate={{ y: [0, 3, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            Scroll to explore
+            Explore Below
           </motion.p>
         </motion.div>
-
-        {/* Additional creative elements */}
-        <motion.div
-          className="absolute top-1/4 left-4 sm:left-10 w-2 h-20 sm:h-32 bg-gradient-to-b from-purple-400/40 to-transparent rounded-full"
-          animate={{
-            scaleY: [0, 1, 0],
-            opacity: [0, 0.6, 0]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            delay: 1
-          }}
-        />
-        
-        <motion.div
-          className="absolute top-1/3 right-4 sm:right-10 w-2 h-16 sm:h-24 bg-gradient-to-b from-pink-400/40 to-transparent rounded-full"
-          animate={{
-            scaleY: [0, 1, 0],
-            opacity: [0, 0.6, 0]
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            delay: 2
-          }}
-        />
-
-        {/* Mobile-specific enhancements */}
-        <div className="sm:hidden absolute inset-x-4 bottom-20">
-          <motion.div
-            className="h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent"
-            animate={{
-              scaleX: [0, 1, 0],
-              opacity: [0, 0.8, 0]
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity
-            }}
-          />
-        </div>
       </motion.div>
 
-      {/* Enhanced background overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none z-5" />
-      
-      {/* Subtle grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(168, 85, 247, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px'
-        }}
-      />
+      {/* Code-themed overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none z-5" />
     </section>
   );
 };
 
-export default HeroSection;
+export default AnimatedCodeHero;
