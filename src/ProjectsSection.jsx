@@ -59,6 +59,15 @@ const projectDetails = [
     link: '#',
   },
   {
+    title: 'PortFolio Website',
+    description: 'A modern web developer showcase highlighting my creative and technical capabilities',
+    tech: ['React', 'Node.js'],
+    category: 'Portfolio',
+    image: './image.png',
+    color: 'from-orange-500 via-red-500 to-pink-500',
+    link: 'https://bhavika-pachauri-da88z7n.gamma.site/',
+  },
+  {
     title: 'CareerBanao',
     description: 'Career guidance and resources website with job listings, career tips, and student engagement tools.',
     tech: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
