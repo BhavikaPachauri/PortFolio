@@ -96,7 +96,7 @@ function Navbar() {
   );
 
   return (
-    <section className="mb-20">
+    <section >
       <motion.nav
         style={{ 
           y: navY, 
@@ -240,21 +240,7 @@ function Navbar() {
                 </motion.a>
               ))}
               
-              {/* Status indicator */}
-              <motion.div
-                className="ml-4 flex items-center space-x-2 px-3 py-1.5 bg-green-500/20 
-                           rounded-full border border-green-500/30 backdrop-blur-sm"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1 }}
-              >
-                <motion.div
-                  className="w-2 h-2 bg-green-400 rounded-full"
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                <span className="text-xs text-green-300 font-medium">Available</span>
-              </motion.div>
+            
             </div>
 
             {/* Enhanced Mobile Menu Toggle */}

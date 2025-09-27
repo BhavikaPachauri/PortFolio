@@ -315,38 +315,7 @@ const CreativeFooter = () => {
         </div>
       </footer>
 
-      {/* Enhanced Floating Action Button */}
-      <motion.div
-        className="fixed bottom-8 right-8 z-50"
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ delay: 2, type: "spring", stiffness: 200 }}
-      >
-        <motion.a
-          href="#contact"
-          className="relative w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white shadow-2xl backdrop-blur-sm border border-white/20"
-          whileHover={{ 
-            scale: 1.1,
-            boxShadow: "0 20px 40px rgba(139, 92, 246, 0.6)"
-          }}
-          whileTap={{ scale: 0.9 }}
-          animate={{
-            y: [0, -5, 0],
-          }}
-          transition={{
-            y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-          }}
-        >
-          <Send className="w-6 h-6" />
-          
-          {/* Pulse Effect */}
-          <motion.div
-            className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 opacity-30"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-        </motion.a>
-      </motion.div>
+      
 
       {/* Progress Bar */}
       <motion.div
