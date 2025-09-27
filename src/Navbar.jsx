@@ -74,6 +74,8 @@ function Navbar() {
           style={{
             background: `linear-gradient(45deg, 
               ${i === 0 ? '#8B5CF6, #EC4899' : i === 1 ? '#06B6D4, #3B82F6' : '#F59E0B, #EF4444'})`,
+            left: `${20 + i * 30}%`,
+            top: `${10 + i * 20}%`,
           }}
           animate={{
             x: [0, 100, 0],
@@ -85,10 +87,6 @@ function Navbar() {
             repeat: Infinity,
             ease: "easeInOut",
             delay: i * 2
-          }}
-          style={{
-            left: `${20 + i * 30}%`,
-            top: `${10 + i * 20}%`,
           }}
         />
       ))}

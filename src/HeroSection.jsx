@@ -390,7 +390,7 @@ const HeroSection = () => {
           {/* Main Name */}
           <Text3D
             size="large"
-            className="mb-4 sm:mb-6 md:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 via-blue-400 to-green-400 leading-none"
+            className="mb-4 sm:mb-6 md:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-green-400 leading-none"
             style={{
               backgroundSize: '200% 200%',
             }}
